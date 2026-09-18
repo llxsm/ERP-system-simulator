@@ -770,11 +770,11 @@
     <h1>电子挂钟 · ERP 生产流程演示</h1>
     <p>物料清单（BOM）多级结构 &nbsp;|&nbsp; 自制件(M) / 采购件(B) 区分 &nbsp;|&nbsp; 从原材料到成品的完整加工流程</p>
     <div class="stats">
-      <div class="stat"><b>17</b>个物料</div>
+      <div class="stat"><b>15</b>个物料</div>
       <div class="stat"><b>4</b>个层级</div>
-      <div class="stat"><b>7</b>个自制件(M)</div>
+      <div class="stat"><b>6</b>个自制件(M)</div>
       <div class="stat"><b>2</b>个委外件(S)</div>
-      <div class="stat"><b>8</b>个采购件(B)</div>
+      <div class="stat"><b>7</b>个采购件(B)</div>
       <div class="stat"><b>1</b>个成品</div>
     </div>
   </header>
@@ -812,7 +812,6 @@
           <li class="b"><span class="badge">B</span>电池 <span class="tcode">14000</span></li>
           <li class="b"><span class="badge">B</span>铝材 8g <span class="tcode">12110</span></li>
           <li class="b"><span class="badge">B</span>铝材 6g <span class="tcode">12210</span></li>
-          <li class="b"><span class="badge">B</span>铝材 3g <span class="tcode">12310</span></li>
           <li class="b"><span class="badge">B</span>塑料 200g <span class="tcode">12411</span></li>
           <li class="b"><span class="badge">B</span>薄膜 0.5g <span class="tcode">12421</span></li>
           <li class="b"><span class="badge">B</span>塑料 120g <span class="tcode">13100</span></li>
@@ -836,7 +835,6 @@
         <div class="assembly">
           <div class="eq"><span class="chip b">铝材</span><span class="arrow">→</span><span class="chip m">长针 12100</span></div>
           <div class="eq"><span class="chip b">铝材</span><span class="arrow">→</span><span class="chip m">短针 12200</span></div>
-          <div class="eq"><span class="chip b">铝材</span><span class="arrow">→</span><span class="chip m">秒针 12300</span></div>
           <div class="eq"><span class="chip b">薄膜</span><span class="arrow">→</span><span class="chip m">字膜 12420</span></div>
         </div>
         <div class="arrow-next"></div>
@@ -847,7 +845,7 @@
         <div class="stage-tag">自制件 M · 装配线</div>
         <div class="assembly">
           <div class="eq"><span class="chip s">盘体</span><span class="chip m">字膜</span><span class="arrow">→</span><span class="chip m">盘面 12400</span></div>
-          <div class="eq"><span class="chip m">长针</span><span class="chip m">短针</span><span class="chip m">秒针</span><span class="chip m">盘面</span><span class="arrow">→</span><span class="chip m">钟盘 12000</span></div>
+          <div class="eq"><span class="chip m">长针</span><span class="chip m">短针</span><span class="chip m">盘面</span><span class="arrow">→</span><span class="chip m">钟盘 12000</span></div>
         </div>
         <div class="arrow-next"></div>
       </div>
@@ -865,7 +863,7 @@
   <!-- ================= 物料清单 ================= -->
   <div class="card">
     <h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>物料清单（BOM 展开）</h2>
-    <div class="sub">全部 17 个物料及其层级、类型、单位用量、父子关系</div>
+    <div class="sub">全部 15 个物料及其层级、类型、单位用量、父子关系</div>
     <table>
       <thead>
         <tr>
@@ -1018,8 +1016,6 @@ const BOM = {
         { code: "12110", name: "铝材", type: "B", unit: "g", qty: 8 } ] },
       { code: "12200", name: "短针", type: "M", unit: "个", qty: 1, children: [
         { code: "12210", name: "铝材", type: "B", unit: "g", qty: 6 } ] },
-      { code: "12300", name: "秒针", type: "M", unit: "个", qty: 1, children: [
-        { code: "12310", name: "铝材", type: "B", unit: "g", qty: 3 } ] },
       { code: "12400", name: "盘面", type: "M", unit: "个", qty: 1, children: [
         { code: "12410", name: "盘体", type: "S", unit: "个", qty: 1, children: [
           { code: "12411", name: "塑料", type: "B", unit: "g", qty: 200 } ] },
@@ -1226,16 +1222,16 @@ const DATE_TODAY = '2026-09-09';
 
 const WAREHOUSES = [
   { id:'raw', code:'01', name:'原辅料仓库', cls:'raw',
-    items:['12110','12210','12310','12411','12421','13100'] },
+    items:['12110','12210','12411','12421','13100'] },
   { id:'semi', code:'02', name:'半成品仓库', cls:'semi',
-    items:['11000','14000','12100','12200','12300','12410','12420','12400','12000','13000'] },
+    items:['11000','14000','12100','12200','12410','12420','12400','12000','13000'] },
   { id:'fin', code:'03', name:'成品仓库', cls:'fin',
     items:['10000'] }
 ];
 /* 机芯(11000)、电池(14000) 属总装用组件，验收入库后进 02 半成品仓库，
    与钟盘、钟框同仓，总装时一并领用 */
 const SEMI_IN_ITEMS = ['11000', '14000'];
-const RAW_IN_ITEMS = ['12110', '12210', '12310', '12411', '12421', '13100'];
+const RAW_IN_ITEMS = ['12110', '12210', '12411', '12421', '13100'];
 
 // 按 BOM 多层展开毛需求(现有库存为 0,净需求 = 毛需求)
 function explodeReq(code, mult) {
@@ -1272,7 +1268,7 @@ const reqRows = (codes) => ({
 
 const RAW = [
   ['机芯 11000', '电池 14000'], ['铝材 12110', '铝材 12210'],
-  ['铝材 12310', '薄膜 12421'], ['塑料 12411', '塑料 13100']
+  ['薄膜 12421', '塑料 12411'], ['塑料 13100']
 ];
 
 /* ---------- 16 个演示步骤：完全对应图 1-1 的业务环节 ---------- */
@@ -1321,9 +1317,9 @@ const FLOW_STEPS = [
   },
   {
     title: '⑤ 采购计划 & 生产计划下达', module: '计划管理 · 计划下达', dept: '计划部',
-    desc: 'MRP 结果正式下达为两张计划：<b>采购计划</b>（8 种采购件 B，发采购部）与<b>生产计划</b>（7 种自制件 M，发生产车间），委外件则由采购部另行走委外加工。',
+    desc: 'MRP 结果正式下达为两张计划：<b>采购计划</b>（7 种采购件 B，发采购部）与<b>生产计划</b>（6 种自制件 M，发生产车间），委外件则由采购部另行走委外加工。',
     docTitle: '采购计划 + 生产计划', docNo: 'PP-2026-001 / MP-2026-001',
-    docMeta: [['采购件品种', '8 种（机芯、电池、铝材、塑料、薄膜）'], ['自制件品种', '7 种（长针/短针/秒针/字膜/盘面/钟盘/成品）']],
+    docMeta: [['采购件品种', '7 种（机芯、电池、铝材、塑料、薄膜）'], ['自制件品种', '6 种（长针/短针/字膜/盘面/钟盘/成品）']],
     docRows: {
       head: ['计划类型', '物料编码', '物料名称', '数量'],
       body: [
@@ -1340,9 +1336,9 @@ const FLOW_STEPS = [
      课堂上一条采购业务链一次讲完；验收入库（原 ⑩）仍单独一步。 */
   {
     title: '⑥ 采购订货（请购 → 下单 → 供应商确认 → 发货）', module: '采购管理 · 采购订单', dept: '采购部 → 供应商',
-    desc: '采购部把整条采购业务链一次跑完：接收<b>采购计划</b>后先做<b>请购处理</b>（核对品种、数量、交期）→ 向供应商正式下达<b>采购订单</b>（机芯、电池、铝材、塑料、薄膜共 8 种）→ 供应商<b>接受订货</b>并回签，形成本厂<b>采购在途</b> → 供应商<b>发货</b>，货物在途运往本厂。其中<b>塑料</b>还需按委外计划发外注塑，<b>委外加工</b>任务一并下达给委外商。',
+    desc: '采购部把整条采购业务链一次跑完：接收<b>采购计划</b>后先做<b>请购处理</b>（核对品种、数量、交期）→ 向供应商正式下达<b>采购订单</b>（机芯、电池、铝材、塑料、薄膜共 7 种）→ 供应商<b>接受订货</b>并回签，形成本厂<b>采购在途</b> → 供应商<b>发货</b>，货物在途运往本厂。其中<b>塑料</b>还需按委外计划发外注塑，<b>委外加工</b>任务一并下达给委外商。',
     docTitle: '请购单 → 采购订单 → 供应商发货单', docNo: 'PR-2026-001 / PO-2026-001 / DN-2026-001',
-    docMeta: [['供应商', '鸿运电子配件'], ['请购依据', 'PP-2026-001 采购计划'], ['采购品种', '8 种采购件'], ['承诺交期', '2026-09-12']],
+    docMeta: [['供应商', '鸿运电子配件'], ['请购依据', 'PP-2026-001 采购计划'], ['采购品种', '7 种采购件'], ['承诺交期', '2026-09-12']],
     docRows: reqRows(WAREHOUSES[0].items),
     moves: []
   },
@@ -1361,7 +1357,7 @@ const FLOW_STEPS = [
   },
   {
     title: '⑧ 生产领料 · 零件加工', module: '生产管理 · 车间领料', dept: '仓库 → 生产车间',
-    desc: '生产计划下达到<b>生产车间</b>，车间按生产订单从 <b>01 原辅料仓库</b><b>生产领料</b>：领取铝材与薄膜，加工成<b>长针 / 短针 / 秒针 / 字膜</b>四种自制件。',
+    desc: '生产计划下达到<b>生产车间</b>，车间按生产订单从 <b>01 原辅料仓库</b><b>生产领料</b>：领取铝材与薄膜，加工成<b>长针 / 短针 / 字膜</b>三种自制件。',
     docTitle: '材料出库单', docNo: 'MO-OUT-001',
     docMeta: [['领料车间', '零件加工车间'], ['出库仓库', '01 原辅料仓库'], ['生产订单', 'MO-2026-001']],
     docRows: {
@@ -1369,26 +1365,24 @@ const FLOW_STEPS = [
       body: [
         ['长针 12100', '铝材 12110', fq('12110', MRP_REQ['12110'])],
         ['短针 12200', '铝材 12210', fq('12210', MRP_REQ['12210'])],
-        ['秒针 12300', '铝材 12310', fq('12310', MRP_REQ['12310'])],
         ['字膜 12420', '薄膜 12421', fq('12421', MRP_REQ['12421'])]
       ] },
     moves: [
       { code: '12110', qty: -MRP_REQ['12110'], wh: 'raw' },
       { code: '12210', qty: -MRP_REQ['12210'], wh: 'raw' },
-      { code: '12310', qty: -MRP_REQ['12310'], wh: 'raw' },
       { code: '12421', qty: -MRP_REQ['12421'], wh: 'raw' }
     ]
   },
   {
     title: '⑨ 生产完工 · 完工入库', module: '生产管理 · 完工', dept: '生产车间 → 仓库',
-    desc: '零件加工完成后工厂做<b>生产完工</b>汇报，随后<b>完工入库</b>：长针 / 短针 / 秒针 / 字膜进入 <b>02 半成品仓库</b>，作为装配线的齐套来源。',
+    desc: '零件加工完成后工厂做<b>生产完工</b>汇报，随后<b>完工入库</b>：长针 / 短针 / 字膜进入 <b>02 半成品仓库</b>，作为装配线的齐套来源。',
     docTitle: '产成品入库单', docNo: 'MO-IN-001',
     docMeta: [['完工车间', '零件加工车间'], ['入库仓库', '02 半成品仓库'], ['完工日期', '2026-09-13']],
     docRows: {
       head: ['物料编码', '物料名称', '完工数量', '单位'],
-      body: ['12100','12200','12300','12420'].map(c => [c, nodes[c].name, MRP_REQ[c], nodes[c].unit])
+      body: ['12100','12200','12420'].map(c => [c, nodes[c].name, MRP_REQ[c], nodes[c].unit])
     },
-    moves: ['12100','12200','12300','12420'].map(c => ({ code: c, qty: MRP_REQ[c], wh: 'semi' }))
+    moves: ['12100','12200','12420'].map(c => ({ code: c, qty: MRP_REQ[c], wh: 'semi' }))
   },
   {
     title: '⑩ 委外加工（发料 → 注塑 → 委外入库）', module: '委外管理', dept: '仓库 ⇄ 供应商',
@@ -1409,13 +1403,13 @@ const FLOW_STEPS = [
   },
   {
     title: '⑪ 生产领料 · 盘面与钟盘装配', module: '生产管理 · 装配线', dept: '仓库 → 生产车间',
-    desc: '装配线再次<b>生产领料</b>：从 <b>02 半成品仓库</b>领出盘体 / 字膜 / 长针 / 短针 / 秒针，依次装成<b>盘面</b>与<b>钟盘</b>；完成后<b>完工入库</b>回 <b>02 半成品仓库</b>。',
+    desc: '装配线再次<b>生产领料</b>：从 <b>02 半成品仓库</b>领出盘体 / 字膜 / 长针 / 短针，依次装成<b>盘面</b>与<b>钟盘</b>；完成后<b>完工入库</b>回 <b>02 半成品仓库</b>。',
     docTitle: '材料出库单 + 产成品入库单', docNo: 'MO-OUT-002 / MO-IN-002',
     docMeta: [['装配工位', '盘面装配 → 钟盘装配'], ['收发仓库', '02 半成品仓库'], ['生产订单', 'MO-2026-002 / 003']],
     docRows: { head: ['产出物料', '领用物料', '数量'],
       body: [
         ['盘面 12400', '盘体 12410 + 字膜 12420', '各 ' + ORDER_QTY + ' 个'],
-        ['钟盘 12000', '长针 12100 + 短针 12200 + 秒针 12300 + 盘面 12400', '各 ' + ORDER_QTY + ' 个']
+        ['钟盘 12000', '长针 12100 + 短针 12200 + 盘面 12400', '各 ' + ORDER_QTY + ' 个']
       ] },
     moves: [
       { code: '12410', qty: -MRP_REQ['12410'], wh: 'semi' },
@@ -1423,7 +1417,6 @@ const FLOW_STEPS = [
       { code: '12400', qty: MRP_REQ['12400'], wh: 'semi' },
       { code: '12100', qty: -MRP_REQ['12100'], wh: 'semi' },
       { code: '12200', qty: -MRP_REQ['12200'], wh: 'semi' },
-      { code: '12300', qty: -MRP_REQ['12300'], wh: 'semi' },
       { code: '12400', qty: -MRP_REQ['12400'], wh: 'semi' },
       { code: '12000', qty: MRP_REQ['12000'], wh: 'semi' }
     ]
@@ -1459,7 +1452,7 @@ const FLOW_STEPS = [
     docMeta: [['付款对象', '鸿运电子配件 / 宏达注塑'], ['收款对象', CUSTOMER], ['结算方式', '银行转账']],
     docRows: { head: ['结算类型', '往来单位', '结算内容', '金额'],
       body: [
-        ['付款结算', '鸿运电子配件', '采购货款（8 种采购件）', '¥ 96,800'],
+        ['付款结算', '鸿运电子配件', '采购货款（7 种采购件）', '¥ 96,800'],
         ['付款结算', '宏达注塑', '委外加工费', '¥ 1,200'],
         ['收款结算', CUSTOMER, '销售货款（电子挂钟 100 个）', '¥ 128,000']
       ] },
@@ -1500,8 +1493,8 @@ const NODE_DEFS = [
   { id: 'fore',    t: '销售预测',   s: '预测需求',          x: 1.22, y: 1.53, w: 0.96, h: 0.62 },
   { id: 'mps',     t: 'MPS 运算',   s: '主生产计划',        x: 2.36, y: 0.68, w: 0.92, h: 0.62 },
   { id: 'mrp',     t: 'MRP 运算',   s: 'BOM 多层展开',      x: 2.36, y: 1.53, w: 0.92, h: 0.62 },
-  { id: 'pplan',   t: '采购计划',   s: '8 种采购件',        x: 2.36, y: 2.38, w: 0.92, h: 0.62 },
-  { id: 'mplan',   t: '生产计划',   s: '7 种自制件',        x: 2.36, y: 3.23, w: 0.92, h: 0.62 },
+  { id: 'pplan',   t: '采购计划',   s: '7 种采购件',        x: 2.36, y: 2.38, w: 0.92, h: 0.62 },
+  { id: 'mplan',   t: '生产计划',   s: '6 种自制件',        x: 2.36, y: 3.23, w: 0.92, h: 0.62 },
   { id: 'pr',      t: '请购处理',   s: 'PR-2026-001',       x: 5.70, y: 2.53, w: 0.96, h: 0.62 },
   { id: 'accept',  t: '接受订货',   s: '供应商确认',        x: 6.84, y: 0.88, w: 0.96, h: 0.62 },
   { id: 'po',      t: '采购订货',   s: '向供应商下单',      x: 5.70, y: 3.66, w: 0.96, h: 0.64 },
@@ -1594,12 +1587,12 @@ const FLIGHT_PLAN = {
        { e: 'e14', tok: [{ l: '发货', c: 'b' }], scale: .55 }],
   7:  [{ e: 'e15', tok: [{ l: '备件', c: 'b' }, { l: '塑料', c: 'b' }, { l: '铝材', c: 'b' }, { l: '薄膜', c: 'b' }] }],
   8:  [{ e: 'e17', tok: [{ l: '铝材', c: 'b' }, { l: '铝材', c: 'b' }, { l: '铝材', c: 'b' }, { l: '薄膜', c: 'b' }] }],
-  9:  [{ e: 'e20', tok: [{ l: '长针', c: 'm' }, { l: '短针', c: 'm' }, { l: '秒针', c: 'm' }, { l: '字膜', c: 'm' }] }],
+  9:  [{ e: 'e20', tok: [{ l: '长针', c: 'm' }, { l: '短针', c: 'm' }, { l: '字膜', c: 'm' }] }],
   10: [{ e: 'e13', tok: [{ l: '塑料', c: 'b' }], flow: 'reverse' },
        { e: 'e12', tok: [{ l: '盘体', c: 's' }, { l: '钟框', c: 's' }], flow: 'reverse' },
        { e: 'e14', tok: [{ l: '盘体', c: 's' }, { l: '钟框', c: 's' }] },
        { e: 'e15', tok: [{ l: '盘体', c: 's' }, { l: '钟框', c: 's' }] }],
-  11: [{ e: 'e17', tok: [{ l: '盘体', c: 's' }, { l: '字膜', c: 'm' }, { l: '长针', c: 'm' }, { l: '短针', c: 'm' }, { l: '秒针', c: 'm' }] },
+  11: [{ e: 'e17', tok: [{ l: '盘体', c: 's' }, { l: '字膜', c: 'm' }, { l: '长针', c: 'm' }, { l: '短针', c: 'm' }] },
        { e: 'e20', tok: [{ l: '盘面', c: 'm' }, { l: '钟盘', c: 'm' }] }],
   12: [{ e: 'e17', tok: [{ l: '机芯', c: 'b' }, { l: '电池', c: 'b' }, { l: '钟盘', c: 'm' }, { l: '钟框', c: 's' }] },
        { e: 'e24', tok: [{ l: '总装', c: 'm' }] },
@@ -1999,7 +1992,7 @@ function renderFlow() {
   }).join('');
 
   const transit = [];
-  if (flowIdx >= 10 && flowIdx < 11) transit.push('8 种采购件在途（供应商 → 本厂：原料进 01 仓，机芯/电池进 02 仓）');
+  if (flowIdx >= 10 && flowIdx < 11) transit.push('7 种采购件在途（供应商 → 本厂：原料进 01 仓，机芯/电池进 02 仓）');
   if (flowIdx >= 11 && flowIdx < 14) transit.push('塑料 2 种待发委外注塑（原辅料仓 → 宏达注塑）');
   if (flowIdx >= 17) transit.push('电子挂钟 ' + ORDER_QTY + ' 个已发运（03 成品仓 → ' + CUSTOMER + '）');
   const transitHtml = '<div class="wh transit"><div class="wh-head"><span>在途 / 待办</span><span class="wh-code">物流跟踪</span></div>'
@@ -2291,7 +2284,7 @@ const MV_FLOWS = {
   8:  [{ l: '铝材 800g', c: 'b', e: 'a_raw_fac' }, { l: '铝材 600g', c: 'b', e: 'a_raw_fac' },
        { l: '铝材 300g', c: 'b', e: 'a_raw_fac' }, { l: '薄膜 50g', c: 'b', e: 'a_raw_fac' }],
   9:  [{ l: '长针', c: 'm', e: 'a_fac_semi' }, { l: '短针', c: 'm', e: 'a_fac_semi' },
-       { l: '秒针', c: 'm', e: 'a_fac_semi' }, { l: '字膜', c: 'm', e: 'a_fac_semi' }],
+       { l: '字膜', c: 'm', e: 'a_fac_semi' }],
   10: [{ l: '塑料', c: 'b', e: 'a_raw_out' }, { l: '盘体', c: 's', e: 'a_out_semi' }, { l: '钟框', c: 's', e: 'a_out_semi' }],
   11: [{ l: '盘体/字膜/针', c: 's', e: 'a_semi_fac' }, { l: '盘面/钟盘', c: 'm', e: 'a_fac_semi' }],
   12: [{ l: '机芯/电池/钟盘/钟框', c: 'm', e: 'a_semi_fac' }, { l: '电子挂钟', c: 'm', e: 'a_fac_fin' }],
