@@ -770,11 +770,11 @@
     <h1>电子挂钟 · ERP 生产流程演示</h1>
     <p>物料清单（BOM）多级结构 &nbsp;|&nbsp; 自制件(M) / 采购件(B) 区分 &nbsp;|&nbsp; 从原材料到成品的完整加工流程</p>
     <div class="stats">
-      <div class="stat"><b>15</b>个物料</div>
+      <div class="stat"><b>13</b>个物料</div>
       <div class="stat"><b>4</b>个层级</div>
       <div class="stat"><b>6</b>个自制件(M)</div>
       <div class="stat"><b>2</b>个委外件(S)</div>
-      <div class="stat"><b>7</b>个采购件(B)</div>
+      <div class="stat"><b>5</b>个采购件(B)</div>
       <div class="stat"><b>1</b>个成品</div>
     </div>
   </header>
@@ -810,11 +810,9 @@
         <ul>
           <li class="b"><span class="badge">B</span>机芯 <span class="tcode">11000</span></li>
           <li class="b"><span class="badge">B</span>电池 <span class="tcode">14000</span></li>
-          <li class="b"><span class="badge">B</span>铝材 8g <span class="tcode">12110</span></li>
-          <li class="b"><span class="badge">B</span>铝材 6g <span class="tcode">12210</span></li>
-          <li class="b"><span class="badge">B</span>塑料 200g <span class="tcode">12411</span></li>
-          <li class="b"><span class="badge">B</span>薄膜 0.5g <span class="tcode">12421</span></li>
-          <li class="b"><span class="badge">B</span>塑料 120g <span class="tcode">13100</span></li>
+          <li class="b"><span class="badge">B</span>铝材 <span class="tcode">12310</span></li>
+          <li class="b"><span class="badge">B</span>塑料 <span class="tcode">12411</span></li>
+          <li class="b"><span class="badge">B</span>薄膜 <span class="tcode">12421</span></li>
         </ul>
         <div class="arrow-next"></div>
       </div>
@@ -863,12 +861,12 @@
   <!-- ================= 物料清单 ================= -->
   <div class="card">
     <h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>物料清单（BOM 展开）</h2>
-    <div class="sub">全部 15 个物料及其层级、类型、单位用量、父子关系</div>
+    <div class="sub">全部 13 个物料及其层级、类型、单位用量、提前期、父子关系</div>
     <table>
       <thead>
         <tr>
           <th>层级</th><th>物料编码</th><th>物料名称</th><th>类型</th>
-          <th>单位</th><th>单位用量</th><th>父件</th><th>直接子件</th>
+          <th>单位</th><th>单位用量</th><th>提前期</th><th>父件</th><th>直接子件</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
@@ -1007,45 +1005,61 @@
 
 <script>
 /* ============ 1. BOM 数据（多级树） ============ */
+/* 物料编码 / 名称 / 类型与甘特图一致：
+   铝材只有 12310 一个编码（长针用 8g、短针用 6g 共用），
+   塑料只有 12411 一个编码（盘体用 塑料① 200g、钟框用 塑料② 120g 共用）。
+   lead = 提前期（天），与甘特图一致。 */
 const BOM = {
-  code: "10000", name: "电子挂钟", type: "M", unit: "个", qty: 1,
+  code: "10000", name: "电子挂钟", type: "M", unit: "个", qty: 1, lead: 3,
   children: [
-    { code: "11000", name: "机芯", type: "B", unit: "个", qty: 1 },
-    { code: "12000", name: "钟盘", type: "M", unit: "个", qty: 1, children: [
-      { code: "12100", name: "长针", type: "M", unit: "个", qty: 1, children: [
-        { code: "12110", name: "铝材", type: "B", unit: "g", qty: 8 } ] },
-      { code: "12200", name: "短针", type: "M", unit: "个", qty: 1, children: [
-        { code: "12210", name: "铝材", type: "B", unit: "g", qty: 6 } ] },
-      { code: "12400", name: "盘面", type: "M", unit: "个", qty: 1, children: [
-        { code: "12410", name: "盘体", type: "S", unit: "个", qty: 1, children: [
-          { code: "12411", name: "塑料", type: "B", unit: "g", qty: 200 } ] },
-        { code: "12420", name: "字膜", type: "M", unit: "个", qty: 1, children: [
-          { code: "12421", name: "薄膜", type: "B", unit: "g", qty: 0.5 } ] }
+    { code: "11000", name: "机芯", type: "B", unit: "个", qty: 1, lead: 3 },
+    { code: "12000", name: "钟盘", type: "M", unit: "个", qty: 1, lead: 2, children: [
+      { code: "12100", name: "长针", type: "M", unit: "个", qty: 1, lead: 1, children: [
+        { code: "12310", name: "铝材", type: "B", unit: "g", qty: 8, lead: 4 } ] },
+      { code: "12200", name: "短针", type: "M", unit: "个", qty: 1, lead: 1, children: [
+        { code: "12310", name: "铝材", type: "B", unit: "g", qty: 6, lead: 4 } ] },
+      { code: "12400", name: "盘面", type: "M", unit: "个", qty: 1, lead: 1, children: [
+        { code: "12410", name: "盘体", type: "S", unit: "个", qty: 1, lead: 2, children: [
+          { code: "12411", name: "塑料", label: "塑料①", type: "B", unit: "g", qty: 200, lead: 1 } ] },
+        { code: "12420", name: "字膜", type: "M", unit: "个", qty: 1, lead: 2, children: [
+          { code: "12421", name: "薄膜", type: "B", unit: "g", qty: 0.5, lead: 1 } ] }
       ]}
     ]},
-    { code: "13000", name: "钟框", type: "S", unit: "个", qty: 1, children: [
-      { code: "13100", name: "塑料", type: "B", unit: "g", qty: 120 } ] },
-    { code: "14000", name: "电池", type: "B", unit: "个", qty: 1 }
+    { code: "13000", name: "钟框", type: "S", unit: "个", qty: 1, lead: 2, children: [
+      { code: "12411", name: "塑料", label: "塑料②", type: "B", unit: "g", qty: 120, lead: 1 } ] },
+    { code: "14000", name: "电池", type: "B", unit: "个", qty: 1, lead: 1 }
   ]
 };
 
 /* ============ 2. 展平 + 布局计算 ============ */
-const nodes = {};          // code -> node（含 children 引用）
-const flatList = [];       // 用于表格
+const nodes = {};          // code -> BOM 节点（同一物料只留一份，供查询名称/类型/单位）
+const flatList = [];       // 唯一物料清单（物料表 + 小游戏题库）
+const parentsOf = {};      // code -> [父件编码]：共用件（铝材、塑料）会有两个父件
+const useQty = {};         // "父件|子件" -> 单位用量：同一物料在不同父件下用量不同
 let leafCounter = 0;
 
 function build(node, depth, parentCode) {
   node.depth = depth;
   node.parent = parentCode;
-  const info = { code: node.code, name: node.name, type: node.type,
-                 unit: node.unit, qty: node.qty, depth, parent: parentCode,
-                 children: (node.children || []).map(c => c.code) };
-  nodes[node.code] = node;
-  flatList.push(info);
+  let info = flatList.filter(x => x.code === node.code)[0];
+  if (info) {
+    info.qty += node.qty;   // 共用件：单位用量累加（铝材 8g + 6g = 14g、塑料 200g + 120g = 320g）
+  } else {
+    info = { code: node.code, name: node.name, label: node.label, type: node.type,
+             unit: node.unit, qty: node.qty, lead: node.lead, depth, parent: parentCode,
+             children: (node.children || []).map(c => c.code) };
+    nodes[node.code] = node;
+    flatList.push(info);
+  }
+  if (parentCode) {
+    useQty[parentCode + '|' + node.code] = node.qty;
+    if (!parentsOf[node.code]) parentsOf[node.code] = [];
+    if (parentsOf[node.code].indexOf(parentCode) < 0) parentsOf[node.code].push(parentCode);
+  }
 
   const kids = node.children || [];
   if (kids.length === 0) {
-    node.x = leafCounter++;          // 叶子按顺序编号
+    node.x = leafCounter++;          // 叶子按顺序编号（共用件按出现次数各占一格）
   } else {
     kids.forEach(c => build(c, depth + 1, node.code));
     node.x = kids.reduce((s, c) => s + c.x, 0) / kids.length;  // 父件取子件平均
@@ -1109,8 +1123,8 @@ function drawEdges(node) {
 }
 drawEdges(BOM);
 
-// 节点 DOM
-Object.values(nodes).forEach(n => {
+// 节点 DOM：按 BOM 出现次数渲染 —— 共用件（铝材 12310、塑料 12411）会各画两个，与甘特图一致
+(function renderTreeNodes(n) {
   const el = document.createElement('div');
   el.className = 'tnode ' + (n.type === 'M' ? 'm' : n.type === 'B' ? 'b' : 's');
   el.style.left = pxOf(n) + 'px';
@@ -1119,20 +1133,21 @@ Object.values(nodes).forEach(n => {
   const qtyText = n.unit === 'g' ? `${n.qty} ${n.unit}` : `×${n.qty}`;
   el.innerHTML =
     `<span class="ttype">${n.type}</span>` +
-    `<span class="tname">${n.name}</span>` +
+    `<span class="tname">${n.label || n.name}</span>` +
     `<span class="tcode">${n.code}</span>` +
     `<span class="tqty">${qtyText}</span>`;
   wrap.appendChild(el);
-});
+  (n.children || []).forEach(renderTreeNodes);
+})(BOM);
 
 /* ============ 4. 高亮「来源 → 去向」路径 ============ */
+/* 共用件有两个父件（铝材 12310 同属长针/短针，塑料 12411 同属盘体/钟框），
+   所以祖先链要按父件表向上走，不能再依赖单一的 node.parent */
 function ancestorsOf(code) {
   const set = new Set();
-  let c = code;
-  while (nodes[c] && nodes[c].parent) {
-    set.add(nodes[c].parent);
-    c = nodes[c].parent;
-  }
+  (function up(c) {
+    (parentsOf[c] || []).forEach(p => { if (!set.has(p)) { set.add(p); up(p); } });
+  })(code);
   return set;
 }
 function descendantsOf(code) {
@@ -1169,18 +1184,21 @@ function highlight(code) {
 
   // 详情面板
   const n = nodes[code];
+  const info = flatList.filter(x => x.code === code)[0] || n;
   const d = document.getElementById('detail');
   const typeCls = n.type === 'M' ? 'd-m' : n.type === 'B' ? 'd-b' : 'd-s';
   const typeName = n.type === 'M' ? '自制件（本厂加工/装配）' : n.type === 'B' ? '采购件（向供应商采购）' : '委外件（本厂发料给委外商加工后收回）';
-  const qtyText = n.unit === 'g' ? `${n.qty} ${n.unit}` : `${n.qty} ${n.unit}`;
+  const qtyText = `${info.qty} ${n.unit}`;
+  const shared = (parentsOf[code] || []).length > 1 ? '（共用件，被 ' + parentsOf[code].length + ' 个父件使用）' : '';
   const parents = up.size ? [...up].map(c => nodes[c].name + '(' + c + ')').join('、') : '无（已是成品）';
-  const kids = n.children.length
+  const kids = (n.children || []).length
     ? n.children.map(c => c.name + '(' + c.code + ')').join('、') : '无（原材料）';
   d.style.display = 'block';
   d.innerHTML =
     `<span class="d-title ${typeCls}">${n.name}（${n.code}）</span>` +
     ` <span class="tag ${n.type === 'M' ? 'm' : n.type === 'B' ? 'b' : 's'}">${n.type}</span> ${typeName}` +
-    `<br>层级：第 ${n.depth} 层 &nbsp;|&nbsp; 单位用量：${qtyText}` +
+    `<br>层级：第 ${n.depth} 层 &nbsp;|&nbsp; 单位用量：${qtyText}${shared}` +
+    `<br>提前期：${n.lead} 天` +
     `<br>去向（组成）：${parents}` +
     `<br>来源（所需物料）：${kids}`;
 }
@@ -1196,11 +1214,12 @@ document.querySelectorAll('.tnode').forEach(el => {
 const tbody = document.getElementById('tableBody');
 flatList.forEach(n => {
   const tr = document.createElement('tr');
-  const parentName = n.parent ? nodes[n.parent].name + ' (' + n.parent + ')' : '—（成品）';
+  const ups = parentsOf[n.code] || [];
+  const parentName = ups.length ? ups.map(c => nodes[c].name + ' (' + c + ')').join('、') : '—（成品）';
   const kidsName = n.children.length
     ? n.children.map(c => nodes[c].name + ' (' + c + ')').join('<br>')
     : '—';
-  const qtyText = n.unit === 'g' ? n.qty + ' ' + n.unit : n.qty + ' ' + n.unit;
+  const qtyText = n.qty + ' ' + n.unit;
   tr.innerHTML =
     `<td>${n.depth}</td>` +
     `<td>${n.code}</td>` +
@@ -1208,6 +1227,7 @@ flatList.forEach(n => {
     `<td><span class="tag ${n.type === 'M' ? 'm' : n.type === 'B' ? 'b' : 's'}">${n.type}</span></td>` +
     `<td>${n.unit}</td>` +
     `<td>${qtyText}</td>` +
+    `<td>${n.lead} 天</td>` +
     `<td>${parentName}</td>` +
     `<td>${kidsName}</td>`;
   tbody.appendChild(tr);
@@ -1222,7 +1242,7 @@ const DATE_TODAY = '2026-09-09';
 
 const WAREHOUSES = [
   { id:'raw', code:'01', name:'原辅料仓库', cls:'raw',
-    items:['12110','12210','12411','12421','13100'] },
+    items:['12310','12411','12421'] },
   { id:'semi', code:'02', name:'半成品仓库', cls:'semi',
     items:['11000','14000','12100','12200','12410','12420','12400','12000','13000'] },
   { id:'fin', code:'03', name:'成品仓库', cls:'fin',
@@ -1231,24 +1251,25 @@ const WAREHOUSES = [
 /* 机芯(11000)、电池(14000) 属总装用组件，验收入库后进 02 半成品仓库，
    与钟盘、钟框同仓，总装时一并领用 */
 const SEMI_IN_ITEMS = ['11000', '14000'];
-const RAW_IN_ITEMS = ['12110', '12210', '12411', '12421', '13100'];
+const RAW_IN_ITEMS = ['12310', '12411', '12421'];
 
 // 按 BOM 多层展开毛需求(现有库存为 0,净需求 = 毛需求)
+/* 按 BOM 出现对象递归（不能用 nodes[code]）：共用件在不同父件下用量不同，
+   铝材 12310 在长针下是 8g、在短针下是 6g，必须各算各的 */
 function explodeReq(code, mult) {
   const req = {};
-  (function walk(c, m) {
-    const n = nodes[c];
-    const need = m * n.qty;
-    req[c] = (req[c] || 0) + need;
-    (n.children || []).forEach(k => walk(k.code, m * n.qty));
-  })(code, mult);
+  (function walk(node, m) {
+    const need = m * node.qty;
+    req[node.code] = (req[node.code] || 0) + need;
+    (node.children || []).forEach(k => walk(k, m * node.qty));
+  })(nodes[code], mult);
   return req;
 }
 const MRP_REQ = explodeReq('10000', ORDER_QTY);
 
 // 数量格式化
 function fq(code, qty) {
-  const n = nodes[code];
+  const n = nodes[code] || { unit: "" };   // 兜底：编码写错时只显示数字，不让整页加载失败
   const v = Math.round(qty * 100) / 100;
   return v + ' ' + n.unit;
 }
@@ -1265,11 +1286,6 @@ const reqRows = (codes) => ({
   head: ['物料编码', '物料名称', '毛需求'],
   body: codes.map(c => [c, nodes[c].name, fq(c, MRP_REQ[c])])
 });
-
-const RAW = [
-  ['机芯 11000', '电池 14000'], ['铝材 12110', '铝材 12210'],
-  ['薄膜 12421', '塑料 12411'], ['塑料 13100']
-];
 
 /* ---------- 16 个演示步骤：完全对应图 1-1 的业务环节 ---------- */
 const FLOW_STEPS = [
@@ -1317,15 +1333,20 @@ const FLOW_STEPS = [
   },
   {
     title: '⑤ 采购计划 & 生产计划下达', module: '计划管理 · 计划下达', dept: '计划部',
-    desc: 'MRP 结果正式下达为两张计划：<b>采购计划</b>（7 种采购件 B，发采购部）与<b>生产计划</b>（6 种自制件 M，发生产车间），委外件则由采购部另行走委外加工。',
+    desc: 'MRP 结果正式下达为两张计划：<b>采购计划</b>（5 种采购件 B，发采购部）与<b>生产计划</b>（6 种自制件 M，发生产车间），委外件则由采购部另行走委外加工。',
     docTitle: '采购计划 + 生产计划', docNo: 'PP-2026-001 / MP-2026-001',
-    docMeta: [['采购件品种', '7 种（机芯、电池、铝材、塑料、薄膜）'], ['自制件品种', '6 种（长针/短针/字膜/盘面/钟盘/成品）']],
+    docMeta: [['采购件品种', '5 种（机芯、电池、铝材、塑料、薄膜）'], ['自制件品种', '6 种（长针/短针/字膜/盘面/钟盘/成品）']],
     docRows: {
       head: ['计划类型', '物料编码', '物料名称', '数量'],
       body: [
         ['采购计划', '11000', '机芯', fq('11000', MRP_REQ['11000'])],
+        ['采购计划', '12310', '铝材', fq('12310', MRP_REQ['12310'])],
         ['采购计划', '12411', '塑料', fq('12411', MRP_REQ['12411'])],
-        ['采购计划', '13100', '塑料', fq('13100', MRP_REQ['13100'])],
+        ['采购计划', '12421', '薄膜', fq('12421', MRP_REQ['12421'])],
+        ['采购计划', '14000', '电池', fq('14000', MRP_REQ['14000'])],
+        ['生产计划', '12100', '长针', fq('12100', MRP_REQ['12100'])],
+        ['生产计划', '12200', '短针', fq('12200', MRP_REQ['12200'])],
+        ['生产计划', '12420', '字膜', fq('12420', MRP_REQ['12420'])],
         ['生产计划', '12000', '钟盘', fq('12000', MRP_REQ['12000'])],
         ['生产计划', '12400', '盘面', fq('12400', MRP_REQ['12400'])],
         ['生产计划', '10000', '电子挂钟', fq('10000', MRP_REQ['10000'])]
@@ -1336,17 +1357,17 @@ const FLOW_STEPS = [
      课堂上一条采购业务链一次讲完；验收入库（原 ⑩）仍单独一步。 */
   {
     title: '⑥ 采购订货（请购 → 下单 → 供应商确认 → 发货）', module: '采购管理 · 采购订单', dept: '采购部 → 供应商',
-    desc: '采购部把整条采购业务链一次跑完：接收<b>采购计划</b>后先做<b>请购处理</b>（核对品种、数量、交期）→ 向供应商正式下达<b>采购订单</b>（机芯、电池、铝材、塑料、薄膜共 7 种）→ 供应商<b>接受订货</b>并回签，形成本厂<b>采购在途</b> → 供应商<b>发货</b>，货物在途运往本厂。其中<b>塑料</b>还需按委外计划发外注塑，<b>委外加工</b>任务一并下达给委外商。',
+    desc: '采购部把整条采购业务链一次跑完：接收<b>采购计划</b>后先做<b>请购处理</b>（核对品种、数量、交期）→ 向供应商正式下达<b>采购订单</b>（机芯、电池、铝材、塑料、薄膜共 5 种）→ 供应商<b>接受订货</b>并回签，形成本厂<b>采购在途</b> → 供应商<b>发货</b>，货物在途运往本厂。其中<b>塑料</b>还需按委外计划发外注塑，<b>委外加工</b>任务一并下达给委外商。',
     docTitle: '请购单 → 采购订单 → 供应商发货单', docNo: 'PR-2026-001 / PO-2026-001 / DN-2026-001',
-    docMeta: [['供应商', '鸿运电子配件'], ['请购依据', 'PP-2026-001 采购计划'], ['采购品种', '7 种采购件'], ['承诺交期', '2026-09-12']],
+    docMeta: [['供应商', '鸿运电子配件'], ['请购依据', 'PP-2026-001 采购计划'], ['采购品种', '5 种采购件'], ['承诺交期', '2026-09-12']],
     docRows: reqRows(WAREHOUSES[0].items),
     moves: []
   },
   {
     title: '⑦ 验收入库（收料）', module: '仓库管理 · 收料', dept: '仓库',
-    desc: '仓库对到货进行数量与质量<b>验收</b>后办理<b>入库</b>：<b>铝材 / 塑料 / 薄膜</b> 6 种原料进 <b>01 原辅料仓库</b>；<b>机芯、电池</b> 属总装用组件，与钟盘、钟框同仓，进 <b>02 半成品仓库</b>。其中<b>塑料</b>随后按委外加工计划发往委外商。',
+    desc: '仓库对到货进行数量与质量<b>验收</b>后办理<b>入库</b>：<b>铝材 / 塑料 / 薄膜</b> 3 种原料进 <b>01 原辅料仓库</b>；<b>机芯、电池</b> 属总装用组件，与钟盘、钟框同仓，进 <b>02 半成品仓库</b>。其中<b>塑料</b>随后按委外加工计划发往委外商。',
     docTitle: '采购入库单', docNo: 'IN-2026-001',
-    docMeta: [['供应商', '鸿运电子配件'], ['01 原辅料仓', '铝材 / 塑料 / 薄膜 6 种'], ['02 半成品仓', '机芯 / 电池'], ['验收结论', '数量相符，质量合格']],
+    docMeta: [['供应商', '鸿运电子配件'], ['01 原辅料仓', '铝材 / 塑料 / 薄膜 3 种'], ['02 半成品仓', '机芯 / 电池'], ['验收结论', '数量相符，质量合格']],
     docRows: {
       head: ['入库仓库', '物料编码', '物料名称', '入库数量', '单位'],
       body: RAW_IN_ITEMS.map(function (c) { return ['01 原辅料仓', c, nodes[c].name, MRP_REQ[c], nodes[c].unit]; })
@@ -1363,14 +1384,14 @@ const FLOW_STEPS = [
     docRows: {
       head: ['产出物料(自制件)', '领用物料(采购件)', '领用数量'],
       body: [
-        ['长针 12100', '铝材 12110', fq('12110', MRP_REQ['12110'])],
-        ['短针 12200', '铝材 12210', fq('12210', MRP_REQ['12210'])],
-        ['字膜 12420', '薄膜 12421', fq('12421', MRP_REQ['12421'])]
+        ['长针 12100', '铝材 12310', fq('12310', ORDER_QTY * useQty['12100|12310'])],
+        ['短针 12200', '铝材 12310', fq('12310', ORDER_QTY * useQty['12200|12310'])],
+        ['字膜 12420', '薄膜 12421', fq('12421', ORDER_QTY * useQty['12420|12421'])]
       ] },
     moves: [
-      { code: '12110', qty: -MRP_REQ['12110'], wh: 'raw' },
-      { code: '12210', qty: -MRP_REQ['12210'], wh: 'raw' },
-      { code: '12421', qty: -MRP_REQ['12421'], wh: 'raw' }
+      { code: '12310', qty: -ORDER_QTY * useQty['12100|12310'], wh: 'raw' },
+      { code: '12310', qty: -ORDER_QTY * useQty['12200|12310'], wh: 'raw' },
+      { code: '12421', qty: -ORDER_QTY * useQty['12420|12421'], wh: 'raw' }
     ]
   },
   {
@@ -1391,12 +1412,12 @@ const FLOW_STEPS = [
     docMeta: [['委外商', '宏达注塑'], ['发料仓库', '01 原辅料仓库'], ['完工入库', '02 半成品仓库'], ['加工费', '¥ 1,200（示例）']],
     docRows: { head: ['委外产出(半成品仓)', '发料(原辅料仓)', '发料数量'],
       body: [
-        ['盘体 12410', '塑料 12411', fq('12411', MRP_REQ['12411'])],
-        ['钟框 13000', '塑料 13100', fq('13100', MRP_REQ['13100'])]
+        ['盘体 12410', '塑料① 12411', fq('12411', ORDER_QTY * useQty['12410|12411'])],
+        ['钟框 13000', '塑料② 12411', fq('12411', ORDER_QTY * useQty['13000|12411'])]
       ] },
     moves: [
-      { code: '12411', qty: -MRP_REQ['12411'], wh: 'raw' },
-      { code: '13100', qty: -MRP_REQ['13100'], wh: 'raw' },
+      { code: '12411', qty: -ORDER_QTY * useQty['12410|12411'], wh: 'raw' },
+      { code: '12411', qty: -ORDER_QTY * useQty['13000|12411'], wh: 'raw' },
       { code: '12410', qty: MRP_REQ['12410'], wh: 'semi' },
       { code: '13000', qty: MRP_REQ['13000'], wh: 'semi' }
     ]
@@ -1452,7 +1473,7 @@ const FLOW_STEPS = [
     docMeta: [['付款对象', '鸿运电子配件 / 宏达注塑'], ['收款对象', CUSTOMER], ['结算方式', '银行转账']],
     docRows: { head: ['结算类型', '往来单位', '结算内容', '金额'],
       body: [
-        ['付款结算', '鸿运电子配件', '采购货款（7 种采购件）', '¥ 96,800'],
+        ['付款结算', '鸿运电子配件', '采购货款（5 种采购件）', '¥ 96,800'],
         ['付款结算', '宏达注塑', '委外加工费', '¥ 1,200'],
         ['收款结算', CUSTOMER, '销售货款（电子挂钟 100 个）', '¥ 128,000']
       ] },
@@ -1493,7 +1514,7 @@ const NODE_DEFS = [
   { id: 'fore',    t: '销售预测',   s: '预测需求',          x: 1.22, y: 1.53, w: 0.96, h: 0.62 },
   { id: 'mps',     t: 'MPS 运算',   s: '主生产计划',        x: 2.36, y: 0.68, w: 0.92, h: 0.62 },
   { id: 'mrp',     t: 'MRP 运算',   s: 'BOM 多层展开',      x: 2.36, y: 1.53, w: 0.92, h: 0.62 },
-  { id: 'pplan',   t: '采购计划',   s: '7 种采购件',        x: 2.36, y: 2.38, w: 0.92, h: 0.62 },
+  { id: 'pplan',   t: '采购计划',   s: '5 种采购件',        x: 2.36, y: 2.38, w: 0.92, h: 0.62 },
   { id: 'mplan',   t: '生产计划',   s: '6 种自制件',        x: 2.36, y: 3.23, w: 0.92, h: 0.62 },
   { id: 'pr',      t: '请购处理',   s: 'PR-2026-001',       x: 5.70, y: 2.53, w: 0.96, h: 0.62 },
   { id: 'accept',  t: '接受订货',   s: '供应商确认',        x: 6.84, y: 0.88, w: 0.96, h: 0.62 },
@@ -1992,7 +2013,7 @@ function renderFlow() {
   }).join('');
 
   const transit = [];
-  if (flowIdx >= 10 && flowIdx < 11) transit.push('7 种采购件在途（供应商 → 本厂：原料进 01 仓，机芯/电池进 02 仓）');
+  if (flowIdx >= 10 && flowIdx < 11) transit.push('5 种采购件在途（供应商 → 本厂：原料进 01 仓，机芯/电池进 02 仓）');
   if (flowIdx >= 11 && flowIdx < 14) transit.push('塑料 2 种待发委外注塑（原辅料仓 → 宏达注塑）');
   if (flowIdx >= 17) transit.push('电子挂钟 ' + ORDER_QTY + ' 个已发运（03 成品仓 → ' + CUSTOMER + '）');
   const transitHtml = '<div class="wh transit"><div class="wh-head"><span>在途 / 待办</span><span class="wh-code">物流跟踪</span></div>'
@@ -2282,7 +2303,7 @@ const MV_WORKING = { 3: ['fac'], 4: ['fac'], 8: ['fac'], 9: ['fac'], 10: ['out']
 const MV_FLOWS = {
   7:  [{ l: '到货', c: 'b', e: 'a_rev_raw' }, { l: '组件', c: 'm', e: 'a_rev_semi' }],
   8:  [{ l: '铝材 800g', c: 'b', e: 'a_raw_fac' }, { l: '铝材 600g', c: 'b', e: 'a_raw_fac' },
-       { l: '铝材 300g', c: 'b', e: 'a_raw_fac' }, { l: '薄膜 50g', c: 'b', e: 'a_raw_fac' }],
+       { l: '薄膜 50g', c: 'b', e: 'a_raw_fac' }],
   9:  [{ l: '长针', c: 'm', e: 'a_fac_semi' }, { l: '短针', c: 'm', e: 'a_fac_semi' },
        { l: '字膜', c: 'm', e: 'a_fac_semi' }],
   10: [{ l: '塑料', c: 'b', e: 'a_raw_out' }, { l: '盘体', c: 's', e: 'a_out_semi' }, { l: '钟框', c: 's', e: 'a_out_semi' }],
